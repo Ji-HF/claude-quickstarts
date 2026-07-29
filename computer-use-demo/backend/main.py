@@ -53,12 +53,6 @@ app.add_middleware(
 app.include_router(sessions.router)
 app.include_router(ws.router)
 
-# Serve static frontend files
-STATIC_DIR = Path(__file__).parent.parent / "static"
-STATIC_DIR.mkdir(parents=True, exist_ok=True)
-if STATIC_DIR.exists():
-    app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
-
 
 @app.get("/api/health")
 async def health_check():
@@ -69,6 +63,13 @@ async def health_check():
         "novnc_port": 6080,
         "novnc_ws_path": "/websockify",
     }
+
+
+# Serve static frontend files
+STATIC_DIR = Path(__file__).parent.parent / "static"
+STATIC_DIR.mkdir(parents=True, exist_ok=True)
+if STATIC_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(STATIC_DIR), html=True), name="static")
 
 
 def main():

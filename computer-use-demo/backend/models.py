@@ -9,8 +9,8 @@ from pydantic import BaseModel, Field
 # ─── Session ─────────────────────────────────────────────────────────────────
 
 class SessionConfig(BaseModel):
-    model: str = "claude-sonnet-4-20250514"
-    provider: str = "anthropic"  # anthropic, bedrock, vertex, deepseek
+    model: str = ""
+    provider: str = ""  # anthropic, bedrock, vertex, deepseek
     api_key: str = ""
     tool_version: str = "computer_use_20251124"
     max_tokens: int = 16384

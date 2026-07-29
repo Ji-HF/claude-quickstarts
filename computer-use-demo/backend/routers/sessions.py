@@ -81,15 +81,30 @@ async def send_message(session_id: str, req: ChatRequest):
     # Start sampling loop in background
     cfg = state.config
 
+    # Apply environment variable defaults for provider & model
+    import os as _os
+    # API_PROVIDER env var takes priority over session config
+    effective_provider = _os.getenv("API_PROVIDER") or cfg.provider or "anthropic"
+    effective_model = cfg.model or (
+        _os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+        if effective_provider == "deepseek"
+        else "claude-sonnet-4-20250514"
+    )
+    effective_api_key = cfg.api_key or (
+        _os.getenv("DEEPSEEK_API_KEY", "")
+        if effective_provider == "deepseek"
+        else _os.getenv("ANTHROPIC_API_KEY", "")
+    )
+
     async def _run():
         try:
             async with state.lock:  # per-session lock prevents concurrent access
                 await state.broadcast("status", {"message": "Starting agent loop...", "phase": "starting"})
                 updated_messages = await run_sampling_loop(
                     session_id=session_id,
-                    model=cfg.model,
-                    provider=cfg.provider,
-                    api_key=cfg.api_key,
+                    model=effective_model,
+                    provider=effective_provider,
+                    api_key=effective_api_key,
                     messages=api_messages,
                     tool_version=cfg.tool_version,  # type: ignore[arg-type]
                     max_tokens=cfg.max_tokens,
