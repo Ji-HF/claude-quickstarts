@@ -1,0 +1,30 @@
+services:
+  computer-use:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DISPLAY_NUM: 1
+        HEIGHT: 768
+        WIDTH: 1024
+    image: computer-use-demo:fastapi
+    container_name: computer-use-demo
+    ports:
+      - "8000:8000"   # FastAPI backend + frontend
+      - "6080:6080"   # noVNC web client
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - API_PROVIDER=${API_PROVIDER:-anthropic}
+      - DATABASE_URL=sqlite+aiosqlite:////home/computeruse/data/computer_use.db
+      - HOST=0.0.0.0
+      - PORT=8000
+      - CORS_ORIGINS=*
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DEEPSEEK_BASE_URL=${DEEPSEEK_BASE_URL:-https://api.deepseek.com}
+      - DEEPSEEK_MODEL=${DEEPSEEK_MODEL:-deepseek-chat}
+    volumes:
+      - ./data:/home/computeruse/data  # persist database
+    restart: unless-stopped
+    shm_size: "2gb"
+    stdin_open: true
+    tty: true

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Computer Use Demo</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <!-- Sidebar: Session Management -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h2>🖥️ Sessions</h2>
+            <button id="btn-new-session" class="btn btn-primary" title="New Session">＋</button>
+        </div>
+        <div id="session-list" class="session-list">
+            <!-- Dynamic session items -->
+        </div>
+        <div class="sidebar-footer">
+            <label class="config-toggle">
+                <input type="checkbox" id="toggle-vnc"> Show VNC
+            </label>
+            <span id="connection-status" class="status-dot" title="Disconnected"></span>
+        </div>
+    </aside>
+
+    <!-- Main: Chat Area -->
+    <main id="chat-main">
+        <div id="chat-header">
+            <h3 id="current-session-name">Select or create a session</h3>
+            <div id="chat-controls">
+                <button id="btn-cancel" class="btn btn-danger" disabled title="Cancel agent">⏹ Cancel</button>
+                <button id="btn-delete-session" class="btn btn-outline-danger" disabled title="Delete session">🗑</button>
+            </div>
+        </div>
+        <div id="chat-messages" class="chat-messages">
+            <div class="empty-state">
+                <p>👋 Welcome! Create or select a session to get started.</p>
+                <p>Type a task for Claude to control the virtual desktop.</p>
+            </div>
+        </div>
+        <form id="chat-form" class="chat-form">
+            <textarea
+                id="chat-input"
+                placeholder="Describe what you want Claude to do..."
+                rows="2"
+                disabled
+            ></textarea>
+            <button type="submit" id="btn-send" class="btn btn-primary" disabled>Send</button>
+        </form>
+    </main>
+
+    <!-- Right: VNC Viewer Panel -->
+    <section id="vnc-panel" class="vnc-panel hidden">
+        <div class="vnc-header">
+            <h3>Virtual Desktop</h3>
+            <button id="btn-close-vnc" class="btn btn-sm">✕</button>
+        </div>
+        <iframe
+            id="vnc-frame"
+            src=""
+            allow="fullscreen"
+            class="vnc-frame"
+        ></iframe>
+    </section>
+
+    <!-- Config Modal -->
+    <div id="config-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Session Configuration</h3>
+            <form id="config-form">
+                <div class="form-group">
+                    <label for="cfg-name">Session Name</label>
+                    <input type="text" id="cfg-name" value="New Session" required>
+                </div>
+                <div class="form-group">
+                    <label for="cfg-model">Model</label>
+                    <input type="text" id="cfg-model" value="claude-opus-4-8">
+                </div>
+                <div class="form-group">
+                    <label for="cfg-provider">Provider</label>
+                    <select id="cfg-provider">
+                        <option value="anthropic">Anthropic</option>
+                        <option value="bedrock">Bedrock</option>
+                        <option value="vertex">Vertex</option>
+                        <option value="deepseek">DeepSeek</option>
+                    </select>
+                </div>
+                <div class="form-group" id="apikey-group">
+                    <label for="cfg-apikey">API Key</label>
+                    <input type="password" id="cfg-apikey" placeholder="sk-ant-...">
+                </div>
+                <div class="form-group">
+                    <label for="cfg-tool-version">Tool Version</label>
+                    <select id="cfg-tool-version">
+                        <option value="computer_use_20251124">20251124 (latest)</option>
+                        <option value="computer_use_20250429">20250429</option>
+                        <option value="computer_use_20250124">20250124</option>
+                        <option value="computer_use_20241022">20241022</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cfg-max-tokens">Max Output Tokens</label>
+                    <input type="number" id="cfg-max-tokens" value="16384" min="1" max="128000">
+                </div>
+                <div class="form-group">
+                    <label for="cfg-thinking-mode">Thinking Mode</label>
+                    <select id="cfg-thinking-mode">
+                        <option value="adaptive">Adaptive</option>
+                        <option value="extended">Extended</option>
+                        <option value="off">Off</option>
+                    </select>
+                </div>
+                <div class="form-group" id="thinking-effort-group">
+                    <label for="cfg-thinking-effort">Thinking Effort</label>
+                    <select id="cfg-thinking-effort">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                        <option value="max">Max</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="btn-cancel-config" class="btn btn-outline">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Session</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
